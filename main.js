@@ -9,7 +9,7 @@ const CONFIG_PATH = __dirname+"/"+"config.json";
 const GIT = process.env.repo || CONFIG_PATH.repo;
 
 async function Load() {
-  console.log(`Ws3 PageBot | Created by Kenneth Aceberos`);
+  console.log(`FB PageBot | Created by Berwin`);
   const execute = async (cmd) => {
     await new Promise(async (resolve, reject) => {
       const buang = await exec(cmd, {
