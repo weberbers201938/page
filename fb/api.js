@@ -61,7 +61,7 @@ module.exports = {
   cmdLoc,
   temp,
   prefix,
-  admin: admin,
+  admin,
   async sendMessage(senderId, message, pageAccessToken) {
     return await new Promise(async (resolve, reject) => {
       const sendMsg = await axios.post(`https://graph.facebook.com/v21.0/me/messages`,
