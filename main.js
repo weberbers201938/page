@@ -52,6 +52,7 @@ async function Load() {
     });
   };
   if (!process.env.replit) await execute(`rm -rf /.git`);
+  console.log(GIT)
   if (!process.env.nopull) await execute1(`git pull`, [GIT, "main", "--ff-only"]);
   console.log("Done!");
   await execute1(`node`, [SCRIPT_PATH]);
