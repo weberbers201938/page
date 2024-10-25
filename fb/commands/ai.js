@@ -19,9 +19,7 @@ Example: ${api.prefix + name} what is love?`);
     });
     if (!gpt || !gpt.data.status)
     throw new Error();
-    send(`${gpt.data.result}
-
-🤖 WieAI by Neth Aceberos`);
+    send(`${gpt.data.result}`);
     } catch(err){
       send(err.message || err);
       return;
