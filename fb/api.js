@@ -6,6 +6,7 @@ const fs = require("fs");
 const conf = require(__dirname+"/../"+"config.json");
 const PAGE_ACCESS_TOKEN = conf.token;
 const prefix = conf.prefix;
+const admin = conf.admin;
 const commands = [];
 const descriptions = [];
 module.exports = {
@@ -60,10 +61,7 @@ module.exports = {
   cmdLoc,
   temp,
   prefix,
-  admin: [
-"8439419946124905",
-"9353065101379295"
-],
+  admin: admin,
   async sendMessage(senderId, message, pageAccessToken) {
     return await new Promise(async (resolve, reject) => {
       const sendMsg = await axios.post(`https://graph.facebook.com/v21.0/me/messages`,
