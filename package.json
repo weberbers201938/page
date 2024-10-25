@@ -1,5 +1,5 @@
 {
-  "name": "Ws3PageBot",
+  "name": "FbPageBot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Neth Aceberos",
+  "author": "Berwin",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^18.0.6",
