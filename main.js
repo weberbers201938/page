@@ -5,7 +5,7 @@ const {
 const fs = require("fs");
 const SCRIPT_FILE = "page_bot.js";
 const SCRIPT_PATH = __dirname + "/" + SCRIPT_FILE;
-const CONFIG_PATH = __dirname+"/"+"config.json";
+const CONFIG_PATH = "./config.json";
 const GIT = process.env.repo || CONFIG_PATH.repo;
 
 async function Load() {
