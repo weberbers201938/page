@@ -5,8 +5,8 @@ const {
 const fs = require("fs");
 const SCRIPT_FILE = "page_bot.js";
 const SCRIPT_PATH = __dirname + "/" + SCRIPT_FILE;
-const CONFIG_PATH = "./config.json";
-const GIT = process.env.repo || CONFIG_PATH.repo;
+const CONFIG_PATH = require("./config.json");
+const GIT = CONFIG_PATH.repo;
 
 async function Load() {
   console.log(`FB PageBot | Created by Berwin`);
