@@ -8,7 +8,7 @@ api = require('./fb/api'),
 app = express(),
 VERIFY_TOKEN = 'fb',
 PASSWORD_ADMIN = process.env.pass || 'fb',
-CONFIG = require('./config.json'),
+CONFIG = __dirname+'/'+'config.json',
 PAGE_ACCESS_TOKEN = api.PAGE_ACCESS_TOKEN,
 PORT = process.env.PORT || CONFIG.port
 
