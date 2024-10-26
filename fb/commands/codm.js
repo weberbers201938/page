@@ -22,8 +22,6 @@ module.exports = {
           }
         }
       });
-      
-      send(`Video created successfully!\nDownload link: ${url}`);
     } catch (error) {
       send("Error while generating your request. Please try again.\n" + (error.message || error));
     }
