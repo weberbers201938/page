@@ -29,12 +29,12 @@ module.exports = {
         }
       );
       
-      const videoData = response.data?.videos;
+      const videoData = response.data?.data?.videos;
       if (!videoData || videoData.length === 0) throw new Error("No videos found for the requested prompt.");
 
-      const link240p = videoData?.find(video => video.quality.includes("240p"))?.url;
-      const link480p = videoData?.find(video => video.quality.includes("480p"))?.url;
-      const link720p = videoData?.find(video => video.quality.includes("720p"))?.url;
+      const link240p = videoData.find(video => video.quality.includes("240p"))?.url;
+      const link480p = videoData.find(video => video.quality.includes("480p"))?.url;
+      const link720p = videoData.find(video => video.quality.includes("720p"))?.url;
 
       await send({
         attachment: {
