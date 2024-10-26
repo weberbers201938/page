@@ -24,18 +24,18 @@ Cubic Ai is your intelligent and versatile personal assistant.
           buttons: [
             {
               type: "web_url",
-              url: "https://www.facebook.com/profile.php?id=61566907376981",
-              title: "Like/Follow our Page"
+              url: "https://www.facebook.com/profile.php?id=61567168155518",
+              title: "Cubic Ai Page"
             },
             {
               type: "web_url",
-              url: "https://www.facebook.com/kennethfranciscoaceberos",
-              title: "Contact Admin 1"
+              url: "https://www.facebook.com/learnfromber",
+              title: "Facebook"
             },
             {
               type: "web_url",
-              url: "https://www.facebook.com/wieginesalpocialechavez",
-              title: "Contact Admin 2"
+              url: "https://www.instagram.com/qxr_ber/profilecard/?igsh=MXZqdnV2b3JvemlnOA==",
+              title: "Instagram"
             }
           ]
         }
