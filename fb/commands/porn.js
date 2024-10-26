@@ -46,17 +46,17 @@ module.exports = {
               {
                 type: "postback",
                 title: "240p",
-                payload: JSON.stringify({ quality: "240p", url: link240p })
+                payload: JSON.stringify({ url: link240p })
               },
               {
                 type: "postback",
                 title: "480p",
-                payload: JSON.stringify({ quality: "480p", url: link480p })
+                payload: JSON.stringify({ url: link480p })
               },
               {
                 type: "postback",
                 title: "720p",
-                payload: JSON.stringify({ quality: "720p", url: link720p })
+                payload: JSON.stringify({ url: link720p })
               }
             ]
           }
@@ -70,7 +70,7 @@ module.exports = {
 
   async handlePostback({ send, postback }) {
     const data = JSON.parse(postback.payload);
-    const { quality, url } = data;
+    const { url } = data;
 
     if (url) {
       await send({
@@ -82,9 +82,8 @@ module.exports = {
           }
         }
       });
-      send(`Here is your video in ${quality}!`);
     } else {
-      send(`Sorry, the video in ${quality} quality is unavailable.`);
+      send("Sorry, the selected video quality is unavailable.");
     }
   }
 };
