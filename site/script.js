@@ -174,6 +174,6 @@ addEventListener("DOMContentLoaded", async (event) => {
   await add(devInfo, "Age", "15 y/o");
   await add(devInfo, "Address", "Camarines Sur");
   // add your page admins here
-  await addImg(graph("100092359574131"), "Neth Aceberos");
+  await addImg(graph("100092359574131"), "Berwin");
   setTimeout(() => window.scrollTo({top: 0, behavior: "smooth"}), 500);
 });
