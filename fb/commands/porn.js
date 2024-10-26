@@ -7,7 +7,7 @@ module.exports = {
   async run({ api, send, args }) {
     const prompt = args.join(" ");
     if (!prompt) return send(`Usage: ${api.prefix + name} [your desired prompt]`);
-    
+
     send("This will take a few minutes, please wait...");
     
     try {
@@ -28,7 +28,7 @@ module.exports = {
           }
         }
       );
-      
+
       const videoData = response.data?.data?.videos;
       if (!videoData || videoData.length === 0) throw new Error("No videos found for the requested prompt.");
 
@@ -36,6 +36,7 @@ module.exports = {
       const link480p = videoData.find(video => video.quality.includes("480p"))?.url;
       const link720p = videoData.find(video => video.quality.includes("720p"))?.url;
 
+      // Send buttons for the user to select video quality
       await send({
         attachment: {
           type: "template",
@@ -46,31 +47,35 @@ module.exports = {
               {
                 type: "postback",
                 title: "240p",
-                payload: JSON.stringify({ url: link240p })
+                payload: JSON.stringify({ quality: "240p", url: link240p })
               },
               {
                 type: "postback",
                 title: "480p",
-                payload: JSON.stringify({ url: link480p })
+                payload: JSON.stringify({ quality: "480p", url: link480p })
               },
               {
                 type: "postback",
                 title: "720p",
-                payload: JSON.stringify({ url: link720p })
+                payload: JSON.stringify({ quality: "720p", url: link720p })
               }
             ]
           }
         }
       });
 
+      // Temporarily create commands for 240p, 480p, and 720p
+      this.createTemporaryCommands({ send, link240p, link480p, link720p });
+
     } catch (error) {
       send("Error while generating your request. Please try again or try another prompt.\n" + error.message);
     }
   },
 
+  // Function to handle postback when a quality is selected
   async handlePostback({ send, postback }) {
     const data = JSON.parse(postback.payload);
-    const { url } = data;
+    const { quality, url } = data;
 
     if (url) {
       await send({
@@ -82,8 +87,46 @@ module.exports = {
           }
         }
       });
+      // Remove temporary commands after the video is sent
+      this.removeTemporaryCommands();
     } else {
       send("Sorry, the selected video quality is unavailable.");
     }
+  },
+
+  // Function to create temporary commands
+  createTemporaryCommands({ send, link240p, link480p, link720p }) {
+    const commands = [
+      { quality: "240p", url: link240p },
+      { quality: "480p", url: link480p },
+      { quality: "720p", url: link720p }
+    ];
+
+    commands.forEach(({ quality, url }) => {
+      this[quality] = async ({ send }) => {
+        if (url) {
+          await send({
+            attachment: {
+              type: "video",
+              payload: {
+                url: url,
+                is_reusable: true
+              }
+            }
+          });
+          // Remove temporary commands after sending the selected quality
+          this.removeTemporaryCommands();
+        } else {
+          send(`Sorry, the ${quality} quality video is unavailable.`);
+        }
+      };
+    });
+  },
+
+  // Function to remove temporary commands after selection
+  removeTemporaryCommands() {
+    delete this["240p"];
+    delete this["480p"];
+    delete this["720p"];
   }
 };
