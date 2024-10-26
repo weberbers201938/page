@@ -8,7 +8,7 @@ module.exports = {
     send("This will take a few minutes, please wait...");
 
     try {
-      const response = await axios.get('http://37.114.46.139:6065/codm');
+      const response = await axios.post('http://37.114.46.139:6065/codm');
       const url = response.data.url;
 
       if (!url) throw new Error("No video URL found.");
