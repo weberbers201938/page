@@ -10,14 +10,14 @@ VERIFY_TOKEN = 'fb',
 PASSWORD_ADMIN = process.env.pass || 'fb',
 CONFIG = __dirname+'/'+'config.json',
 PAGE_ACCESS_TOKEN = api.PAGE_ACCESS_TOKEN,
-PORT = process.env.PORT || CONFIG.port
+PORT = process.env.PORT || CONFIG.port;
 
 app.use(express.json());
 app.use(express.static(__dirname + "/site"));
 app.set("json spaces", 4);
 
 [
-["/", "index.html"]
+  ["/", "index.html"]
 ].forEach(route => app.get(route[0], (req, res) => res.sendFile(__dirname + "/site/" + route[1])));
 
 function getUptime() {
@@ -34,22 +34,21 @@ app.get("/json", (req, res) => {
     uptime: getUptime(),
     server: {
       cpu: os.cpus(),
-      memory: `${os.freemem()+" MB"} available of ${os.totalmem()+" MB"}`
+      memory: `${os.freemem()} MB available of ${os.totalmem()} MB`
     }
   });
 });
 
 app.get("/restart", async (req, res) => {
-  const {
-    pass
-  } = req.query;
+  const { pass } = req.query;
   try {
-  if (!pass)
-  throw new Error("No password input.");
-  else if (pass !== PASSWORD_ADMIN)
-  throw new Error("Wrong password!");
-  res.json({ status: "Restarting..."});
-  process.exit(1);
+    if (!pass)
+      throw new Error("No password input.");
+    else if (pass !== PASSWORD_ADMIN)
+      throw new Error("Wrong password!");
+    
+    res.json({ status: "Restarting..." });
+    process.exit(1);
   } catch(error) {
     res.json({
       error: error.message || error
@@ -74,7 +73,11 @@ app.get('/webhook', async (req, res) => {
 app.post('/webhook', async (req, res) => {
   const body = req.body;
   if (body.object === 'page') {
-    body.entry.forEach(async entry => entry.messaging.forEach(async event => require('./fb/listenMessage')(event, PAGE_ACCESS_TOKEN)));
+    body.entry.forEach(async entry => 
+      entry.messaging.forEach(async event => 
+        require('./fb/listenMessage')(event, PAGE_ACCESS_TOKEN)
+      )
+    );
     res.status(200).send("EVENT_RECEIVED");
   } else {
     res.status(404).send("404_NOTFOUND");
@@ -82,21 +85,21 @@ app.post('/webhook', async (req, res) => {
 });
 
 async function post() {
-  console.log("Auto 1 Hour Post Enabled");
-  const autoPost = cron.schedule(`0 */1 * * *`, async () => {
-    const {
-      content,
-      author
-    } = (await axios.get(`https://api.realinspire.tech/v1/quotes/random`)).data[0];
+  console.log("Auto 2 Minute Post Enabled");
+  const autoPost = cron.schedule(`*/2 * * * *`, async () => { // Set schedule to every two minutes
+    const { content, author } = (await axios.get(`https://api.realinspire.tech/v1/quotes/random`)).data[0];
+    
     await api.publishPost(`💭 Remember...
 ${content}
 -${author}
 `, PAGE_ACCESS_TOKEN);
+    
     console.log("Triggered autopost.");
   }, {
     scheduled: true,
     timezone: "Asia/Manila"
   });
+  
   autoPost.start();
 }
 
