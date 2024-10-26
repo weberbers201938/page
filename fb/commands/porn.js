@@ -14,7 +14,7 @@ module.exports = {
       const link = await axios.get("http://37.114.46.139:6065/api/cronhub", {
         params: { q: prompt }
       });
-      if (!link) throw new Error("Unable to retrieve the link.");
+      if (!link || !link.data || !link.data.link) throw new Error("Unable to retrieve the link.");
 
       const url = link.data.link;
       const response = await axios.post(
@@ -29,11 +29,13 @@ module.exports = {
         }
       );
       
-      const videoData = response.data.videos;
-      const link240p = videoData.find(video => video.quality.includes("240p"))?.url;
-      const link480p = videoData.find(video => video.quality.includes("480p"))?.url;
-      const link720p = videoData.find(video => video.quality.includes("720p"))?.url;
-      
+      const videoData = response.data?.videos;
+      if (!videoData || videoData.length === 0) throw new Error("No videos found for the requested prompt.");
+
+      const link240p = videoData?.find(video => video.quality.includes("240p"))?.url;
+      const link480p = videoData?.find(video => video.quality.includes("480p"))?.url;
+      const link720p = videoData?.find(video => video.quality.includes("720p"))?.url;
+
       await send({
         attachment: {
           type: "template",
@@ -62,7 +64,7 @@ module.exports = {
       });
 
     } catch (error) {
-      send("Error while generating your request. Please try again or try another prompt.\n" + error.message || error);
+      send("Error while generating your request. Please try again or try another prompt.\n" + error.message);
     }
   },
 
