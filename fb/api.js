@@ -1,16 +1,19 @@
 const request = require('request');
 const axios = require("axios");
+const chalk = require("chalk");
 const cmdLoc = __dirname + "/commands";
 const temp = __dirname + "/temp";
 const fs = require("fs");
-const conf = require(__dirname+"/../"+"config.json");
+const conf = require(__dirname + "/../" + "config.json");
 const PAGE_ACCESS_TOKEN = conf.token;
 const prefix = conf.prefix;
 const admin = conf.admin;
 const commands = [];
 const descriptions = [];
+
 module.exports = {
   PAGE_ACCESS_TOKEN,
+  
   async loadCommands() {
     const commandsPayload = [];
     fs.readdir(cmdLoc, {}, async (err, files) => {
@@ -24,48 +27,54 @@ module.exports = {
           name: `${prefix + commandName}`,
           description
         });
-        console.log(commandName, "Loaded");
+        console.log(chalk.green(`${commandName} Loaded`));
       }
-      console.log("Wait...");
+      console.log(chalk.blue("Wait..."));
     });
+
     const dataCmd = await axios.get(`https://graph.facebook.com/v21.0/me/messenger_profile`, {
       params: {
         fields: "commands",
         access_token: PAGE_ACCESS_TOKEN
       }
     });
-    if (dataCmd.data.data.commands){
-    if (dataCmd.data.data[0].commands[0].commands.length === commandsPayload.length)
-    return console.log("Commands not changed");
+    
+    if (dataCmd.data.data.commands && 
+        dataCmd.data.data[0].commands[0].commands.length === commandsPayload.length) {
+      return console.log(chalk.yellow("Commands not changed"));
     }
+
     const loadCmd = await axios.post(`https://graph.facebook.com/v21.0/me/messenger_profile?access_token=${PAGE_ACCESS_TOKEN}`, {
       commands: [
         {
           locale: "default",
           commands: commandsPayload
-      }
-    ]
+        }
+      ]
     }, {
       headers: {
         "Content-Type": "application/json"
       }
     });
+
     if (loadCmd.data.result === "success")
-      console.log("Commands loaded!")
+      console.log(chalk.green("Commands loaded!"));
     else
-      console.log("Failed to load commands");
+      console.log(chalk.red("Failed to load commands"));
+
     return;
   },
+
   commands,
   descriptions,
   cmdLoc,
   temp,
   prefix,
   admin,
+
   async sendMessage(senderId, message, pageAccessToken) {
-    return await new Promise(async (resolve, reject) => {
-      const sendMsg = await axios.post(`https://graph.facebook.com/v21.0/me/messages`,
-      {
+    try {
+      const sendMsg = await axios.post(`https://graph.facebook.com/v21.0/me/messages`, {
         recipient: { id: senderId },
         message
       }, {
@@ -76,37 +85,49 @@ module.exports = {
           "Content-Type": "application/json"
         }
       });
+      
       const data = sendMsg.data;
       if (data.error) {
-        console.error('Error sending message:', data.error);
-        reject(data.error);
+        console.error(chalk.red('Error sending message:'), data.error);
+        throw data.error;
       }
-      resolve(data);
-    });
+      
+      console.log(chalk.green('Message sent successfully!'));
+      return data;
+    } catch (error) {
+      console.error(chalk.red('Error in sendMessage:'), error.response ? error.response.data : error);
+      throw error.response ? error.response.data : error;
+    }
   },
+
   async publishPost(message, access_token) {
-    return await new Promise(async (resolve, reject) => {
-    const res = await axios.post(`https://graph.facebook.com/v21.0/me/feed`,
-    {
-      message,
-      access_token
-    }, {
-      params: {
-        access_token
-      },
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    if (!res) reject();
-    resolve(res.data);
-    });
+    try {
+      const res = await axios.post(
+        `https://graph.facebook.com/v21.0/me/feed`,
+        { message },
+        {
+          params: {
+            access_token
+          },
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      console.log(chalk.green("Post published successfully!"));
+      return res.data;
+    } catch (error) {
+      console.error(chalk.red('Error publishing post:'), error.response ? error.response.data : error);
+      throw error.response ? error.response.data : error;
+    }
   },
+
   introduction: `Hello, I am Cubic Ai and I am your assistant.
 Type ${prefix}help for available commands.
 
 Note: Cubic AI is highly recommended to use Messenger because some features won't work and limited.
 🤖 Created by Berwin`,
+
   api_josh: "https://deku-rest-apis.ooguy.com",
   echavie: "https://echavie3.nethprojects.workers.dev"
-}
+};
