@@ -1,6 +1,4 @@
-event, pageAccessToken);
-};
-};const api = require('./api');
+const api = require('./api');
 const prefix = api.prefix;
 
 // Function to send the buttons for Commands, About, and Prefix if prefix exists
