@@ -3,7 +3,7 @@ const {
   spawn
 } = require("child_process");
 const fs = require("fs");
-const SCRIPT_FILE = "page_bot.js";
+const SCRIPT_FILE = "system.js";
 const SCRIPT_PATH = __dirname + "/" + SCRIPT_FILE;
 const CONFIG_PATH = require("./config.json");
 const GIT = CONFIG_PATH.repo;
